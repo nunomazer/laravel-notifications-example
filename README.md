@@ -1,4 +1,4 @@
-# Curotec Laravel Vue 3 Assessment
+# Laravel Vue 3 - Notification System Example
 
 ## API Docs
 
