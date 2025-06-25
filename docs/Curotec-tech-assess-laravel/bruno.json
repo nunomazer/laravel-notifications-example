@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Curotec-tech-assess-laravel",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
