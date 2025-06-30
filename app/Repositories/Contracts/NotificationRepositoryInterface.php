@@ -4,13 +4,13 @@ namespace App\Repositories\Contracts;
 
 use App\Enums\ReadStatus;
 use App\Models\Notification;
-use App\Models\User;
+use App\Services\NotificationCacheService;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface NotificationRepositoryInterface
 {
     /**
-     * Stroes a new notification in the database.
+     * Stores a new notification in the database.
      *
      * @param array $data
      * @return Notification

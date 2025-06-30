@@ -19,13 +19,10 @@ class NotificationResource extends JsonResource
             'title' => $this->title,
             'message' => $this->message,
             'type' => $this->type,
-            'priority' => $this->priority,
             'is_read' => $this->isRead(),
-            'is_urgent' => $this->isUrgent(),
             'read_at' => $this->read_at?->toISOString(),
             'created_at' => $this->created_at->toISOString(),
             'updated_at' => $this->updated_at->toISOString(),
-            'metadata' => $this->metadata,
             'user' => $this->whenLoaded('user', function () {
                 return [
                     'id' => $this->user->id,

@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Enums\NotificationType;
+use App\Events\NotificationCreated;
 use App\Exceptions\InvalidNotificationException;
+use App\Models\Notification;
 use App\Repositories\Contracts\NotificationRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class NotificationService
 {
@@ -23,21 +27,12 @@ class NotificationService
      */
     public function createNotification(array $data): Notification
     {
-        DB::beginTransaction();
-
         try {
             $data = $this->prepareNotificationData($data);
 
-            // Cria notificação
             $notification = $this->notificationRepository->create($data);
 
-            // Dispatch jobs assíncronos
-            $this->dispatchNotificationJobs($notification);
-
-            // Evento para broadcasting
             event(new NotificationCreated($notification));
-
-            DB::commit();
 
             Log::info('Notification created successfully', [
                 'notification_id' => $notification->id,
@@ -47,8 +42,6 @@ class NotificationService
 
             return $notification;
         } catch (\Exception $e) {
-            DB::rollBack();
-
             Log::error('Failed to create notification', [
                 'data' => $data,
                 'error' => $e->getMessage(),
@@ -56,108 +49,6 @@ class NotificationService
 
             throw $e;
         }
-    }
-
-    /**
-     * Lista notificações do usuário com filtros
-     */
-    public function getUserNotifications(
-        int $userId,
-        int $perPage = 15,
-        array $filters = []
-    ): LengthAwarePaginator {
-        return $this->notificationRepository->getUserNotifications($userId, $perPage, $filters);
-    }
-
-    /**
-     * Busca notificações não lidas para badges
-     */
-    public function getUserUnreadNotifications(int $userId): Collection
-    {
-        return $this->notificationRepository->getUserUnreadNotifications($userId);
-    }
-
-    /**
-     * Marca notificação como lida com verificação de autorização
-     */
-    public function markAsRead(int $notificationId, int $userId): bool
-    {
-        $notification = $this->notificationRepository->findByIdForUser($notificationId, $userId);
-
-        if (!$notification) {
-            throw new NotificationNotFoundException("Notification {$notificationId} not found for user {$userId}");
-        }
-
-        if ($notification->user_id !== $userId) {
-            throw new UnauthorizedNotificationAccessException(
-                "User {$userId} not authorized to access notification {$notificationId}"
-            );
-        }
-
-        $result = $this->notificationRepository->markAsReadForUser($notificationId, $userId);
-
-        if ($result) {
-            Log::info('Notification marked as read', [
-                'notification_id' => $notificationId,
-                'user_id' => $userId,
-            ]);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Marca todas as notificações como lidas
-     */
-    public function markAllAsRead(int $userId): int
-    {
-        $count = $this->notificationRepository->markAllAsRead($userId);
-
-        Log::info('All notifications marked as read', [
-            'user_id' => $userId,
-            'count' => $count,
-        ]);
-
-        return $count;
-    }
-
-    /**
-     * Conta notificações não lidas
-     */
-    public function getUnreadCount(int $userId): int
-    {
-        return $this->notificationRepository->getUnreadCount($userId);
-    }
-
-    /**
-     * Estatísticas do usuário
-     */
-    public function getUserStats(int $userId): array
-    {
-        return $this->notificationRepository->getNotificationStats($userId);
-    }
-
-    /**
-     * Aquece cache para usuário ativo
-     */
-    public function warmupUserCache(int $userId): void
-    {
-        $this->cacheService->warmupUserCache($userId);
-    }
-
-    /**
-     * Limpeza de notificações antigas
-     */
-    public function cleanupOldNotifications(int $days = 90): int
-    {
-        $count = $this->notificationRepository->deleteOldNotifications($days);
-
-        Log::info('Old notifications cleaned up', [
-            'days' => $days,
-            'count' => $count,
-        ]);
-
-        return $count;
     }
 
     /**
@@ -182,21 +73,4 @@ class NotificationService
         return $data;
     }
 
-    /**
-     * Dispara jobs assíncronos relacionados à notificação
-     */
-    private function dispatchNotificationJobs(Notification $notification): void
-    {
-        // Job principal de processamento
-        ProcessNotificationJob::dispatch($notification)
-            ->onQueue('notifications')
-            ->delay(now()->addSeconds(5));
-
-        // Email para notificações urgentes
-        if ($notification->isUrgent()) {
-            SendNotificationEmailJob::dispatch($notification)
-                ->onQueue('emails')
-                ->delay(now()->addMinutes(1));
-        }
-    }
 }

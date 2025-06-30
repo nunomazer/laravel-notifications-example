@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Resources\NotificationResource;
 use App\Services\NotificationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -25,7 +26,7 @@ class NotificationController extends Controller
             );
 
             return response()->json([
-                'data' => new NotificationResource($notification),
+                'data' => new NotificationResource($notification->load('user')),
                 'message' => 'Notification created.',
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
