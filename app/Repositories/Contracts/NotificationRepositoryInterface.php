@@ -21,9 +21,10 @@ interface NotificationRepositoryInterface
      * Retrieves a notification by its ID.
      *
      * @param int $id
+     * @param bool $fail Whether to throw an exception if the notification is not found.
      * @return Notification|null
      */
-    public function findById(int $id): ?Notification;
+    public function findById(int $id, bool $fail = true): ?Notification;
 
     /**
      * Lists notifications for a specific user with optional read status and pagination.
@@ -42,10 +43,10 @@ interface NotificationRepositoryInterface
     /**
      * Marks a notification as read.
      *
-     * @param int $id
+     * @param int | Notification $notification
      * @return bool
      */
-    public function markAsRead(int $id): bool;
+    public function markAsRead(int | Notification $notification): bool;
 
     /**
      * Marks all notifications as read for a specific user.

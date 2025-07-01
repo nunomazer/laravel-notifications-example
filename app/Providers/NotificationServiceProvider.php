@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Repositories\Contracts\NotificationRepositoryInterface;
 use App\Repositories\NotificationRepository;
 use App\Services\NotificationCacheService;
+use App\Services\NotificationService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class NotificationServiceProvider extends ServiceProvider
@@ -27,6 +29,16 @@ class NotificationServiceProvider extends ServiceProvider
         $this->app->bind(
             NotificationRepositoryInterface::class,
             NotificationRepository::class
+        );
+
+        $this->app->bind(
+            NotificationService::class,
+            function (Application $app) {
+                return new NotificationService(
+                    $app->make(NotificationRepositoryInterface::class),
+                    $app->make('notification.cache')
+                );
+            }
         );
     }
 }

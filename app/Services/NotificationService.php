@@ -52,6 +52,27 @@ class NotificationService
     }
 
     /**
+     * Mark a notification as read and invalidate the cache for the user.
+     *
+     * @param int | Notification $notification
+     * @return bool
+     */
+    public function markAsRead(int | Notification $notification): bool
+    {
+        if (is_numeric($notification)) {
+            $notification = $this->notificationRepository->findById($notification);
+        }
+
+        $result = $this->notificationRepository->markAsRead($notification);
+
+        if ($result) {
+            $this->cacheService->invalidateUserNotificationCache($notification->user_id);
+        }
+
+        return $result;
+    }
+
+    /**
      * Prepares notification data for creation
      *
      * @param array $data

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -12,6 +13,12 @@ class NotificationBar extends Component
     public $unreadCount = 0;
     public $showDropdown = false;
     public $notifications = [];
+    protected NotificationService $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = app(NotificationService::class);
+    }
 
     public function mount()
     {
@@ -37,16 +44,10 @@ class NotificationBar extends Component
         $this->showDropdown = !$this->showDropdown;
     }
 
-    public function markAsRead($notificationId)
+    public function markAsRead(int $notificationId)
     {
-        $notification = Auth::user()
-            ->notifications()
-            ->find($notificationId);
-
-        if ($notification) {
-            $notification->markAsRead();
-            $this->loadNotifications();
-        }
+        $this->notificationService->markAsRead($notificationId);
+        $this->loadNotifications();
     }
 
     #[On('notification-created')]

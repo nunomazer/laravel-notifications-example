@@ -21,9 +21,12 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
     /**
      * @inheritDoc
      */
-    public function findById(int $id): ?Notification
+    public function findById(int $id, bool $fail = true): ?Notification
     {
-        // TODO: Implement findById() method.
+        if ($fail) {
+            return Notification::findOrFail($id);
+        }
+        return Notification::find($id);
     }
 
     /**
@@ -37,9 +40,13 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
     /**
      * @inheritDoc
      */
-    public function markAsRead(int $id): bool
+    public function markAsRead(int | Notification $notification): bool
     {
-        // TODO: Implement markAsRead() method.
+        if (is_numeric($notification)) {
+            $notification = Notification::findOrFail($notification);
+        }
+
+        return $notification->update(['read_at' => now()]);
     }
 
     /**
