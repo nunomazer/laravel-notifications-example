@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Resources\NotificationResource;
+use App\Models\Notification;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
@@ -38,13 +39,34 @@ class NotificationController extends Controller
         }
     }
 
-    public function getLatestByUser(Request $request, User $user): JsonResponse
-    {
+public function getLatestByUser(Request $request, User $user): JsonResponse
+{
+    try {
         $notifications = $this->notificationService->latestUnreadForUser($user->id);
 
         return response()->json([
             'data' => NotificationResource::collection($notifications),
             'message' => 'Latest notifications retrieved.',
         ], Response::HTTP_OK);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error trying retrieve latest notifications.',
+            'error' => $e->getMessage(),
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-}
+}public function putMarkAsRead(Request $request, Notification $notification): JsonResponse
+{
+    try {
+        $this->notificationService->markAsRead($notification);
+
+        return response()->json([
+            'data' => new NotificationResource($notification->load('user')),
+            'message' => 'Notification marked as read.',
+        ], Response::HTTP_OK);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error marking notification as read.',
+            'error' => $e->getMessage(),
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+}}

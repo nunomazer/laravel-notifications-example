@@ -1,0 +1,15 @@
+meta {
+  name: Mark as Read
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{BASE_URL}}/notifications/{{notification}}/mark-read
+  body: json
+  auth: inherit
+}
+
+vars:pre-request {
+  notification: 9
+}

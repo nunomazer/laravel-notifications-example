@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{BASE_URL}}/users/1/notifications/latest
+  url: {{BASE_URL}}/users/{{user}}/notifications/latest
   body: json
   auth: inherit
+}
+
+vars:pre-request {
+  user: 1
 }
