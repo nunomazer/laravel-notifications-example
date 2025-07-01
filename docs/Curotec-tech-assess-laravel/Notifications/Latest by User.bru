@@ -1,0 +1,11 @@
+meta {
+  name: Latest by User
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/users/1/notifications/latest
+  body: json
+  auth: inherit
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Resources\NotificationResource;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class NotificationController extends Controller
     ) {}
 
     /**
-     * Cria nova notificação
+     * Create a new notification.
      */
     public function store(StoreNotificationRequest $request): JsonResponse
     {
@@ -35,5 +36,15 @@ class NotificationController extends Controller
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function getLatestByUser(Request $request, User $user): JsonResponse
+    {
+        $notifications = $this->notificationService->latestUnreadForUser($user->id);
+
+        return response()->json([
+            'data' => NotificationResource::collection($notifications),
+            'message' => 'Latest notifications retrieved.',
+        ], Response::HTTP_OK);
     }
 }
