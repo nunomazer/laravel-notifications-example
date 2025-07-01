@@ -27,16 +27,9 @@ class NotificationBar extends Component
 
     public function loadNotifications()
     {
-        $this->notifications = Auth::user()
-            ->notifications()
-            ->latest()
-            ->limit(5)
-            ->get();
+        $this->notifications = $this->notificationService->latestUnreadForUser(Auth::id());
 
-        $this->unreadCount = Auth::user()
-            ->notifications()
-            ->whereNull('read_at')
-            ->count();
+        $this->unreadCount = $this->notificationService->countUnreadForUser(Auth::id());
     }
 
     public function toggleDropdown()

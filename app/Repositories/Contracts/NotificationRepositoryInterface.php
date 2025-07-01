@@ -4,7 +4,9 @@ namespace App\Repositories\Contracts;
 
 use App\Enums\ReadStatus;
 use App\Models\Notification;
+use App\Models\User;
 use App\Services\NotificationCacheService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface NotificationRepositoryInterface
@@ -41,6 +43,18 @@ interface NotificationRepositoryInterface
     ): LengthAwarePaginator;
 
     /**
+     * Lists latest unread notifications for a specific user.
+     *
+     * @param int|User $user
+     * @param int $limit
+     * @return Collection
+     */
+    public function latestUnread(
+        null | int $userId,
+        int $limit = 10
+    ): Collection;
+
+    /**
      * Marks a notification as read.
      *
      * @param int | Notification $notification
@@ -55,4 +69,12 @@ interface NotificationRepositoryInterface
      * @return int
      */
     public function markAllAsRead(null | int $userId): int;
+
+    /**
+     * Counts unread notifications for a specific user.
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function countUnread(int $userId): int;
 }

@@ -6,7 +6,9 @@ use App\Enums\NotificationType;
 use App\Events\NotificationCreated;
 use App\Exceptions\InvalidNotificationException;
 use App\Models\Notification;
+use App\Models\User;
 use App\Repositories\Contracts\NotificationRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -70,6 +72,27 @@ class NotificationService
         }
 
         return $result;
+    }
+
+    /**
+     * Retrieves the list of latest unread notifications for a user
+     *
+     * @param int|User $userId
+     * @param int $limit
+     * @return Collection
+     */
+    public function latestUnreadForUser(int $userId, int $limit = 10): Collection
+    {
+        return $this->cacheService->remember($userId, 'latest_unread_notifications', null, function () use ($userId, $limit) {
+            return $this->notificationRepository->latestUnread($userId, $limit);
+        });
+    }
+
+    public function countUnreadForUser(int $userId): int
+    {
+        return $this->cacheService->remember($userId, 'unread_notification_count', null, function () use ($userId) {
+            return $this->notificationRepository->countUnread($userId);
+        });
     }
 
     /**

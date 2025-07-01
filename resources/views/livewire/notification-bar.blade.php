@@ -11,25 +11,25 @@
     @if($showDropdown)
         <div class="notification-dropdown">
             <div class="notification-header">
-                <h3>Notificações</h3>
+                <h3>Notifications</h3>
             </div>
             <div class="notification-list">
                 @forelse($notifications as $notification)
                     <div class="notification-item {{ $notification->read_at ? 'read' : 'unread' }}">
                         <div class="notification-content">
-                            <p class="notification-title">{{ $notification->data['title'] ?? 'Nova notificação' }}</p>
-                            <p class="notification-message">{{ $notification->data['message'] ?? '' }}</p>
+                            <p class="notification-title">{{ $notification->title }}</p>
+                            <p class="notification-message">{{ \Illuminate\Support\Str::limit($notification->message, 100) }}</p>
                             <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
                         </div>
                         @if(!$notification->read_at)
                             <button wire:click="markAsRead('{{ $notification->id }}')" class="mark-read-button">
-                                Marcar como lida
+                                Mark as read
                             </button>
                         @endif
                     </div>
                 @empty
                     <div class="no-notifications">
-                        <p>Nenhuma notificação</p>
+                        <p>No notification</p>
                     </div>
                 @endforelse
             </div>

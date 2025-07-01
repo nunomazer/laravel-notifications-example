@@ -28,14 +28,14 @@ class Notification extends Model
         return $this->belongsTo(User::class)->select(['id', 'name', 'email']);
     }
 
-    public function markAsRead(): void
+    public function markAsRead(): bool
     {
         // Don't touch the database if already read, avoiding unnecessary i/o
         if ($this->isRead()) {
-            return;
+            return true;
         }
 
-        $this->update(['read_at' => now()]);
+        return $this->update(['read_at' => now()]);
     }
 
     public function isRead(): bool

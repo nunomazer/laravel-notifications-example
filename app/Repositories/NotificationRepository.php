@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\ReadStatus;
 use App\Models\Notification;
 use App\Services\NotificationCacheService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class NotificationRepository implements Contracts\NotificationRepositoryInterface
@@ -46,7 +47,7 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
             $notification = Notification::findOrFail($notification);
         }
 
-        return $notification->update(['read_at' => now()]);
+        return $notification->markAsRead();
     }
 
     /**
@@ -57,4 +58,25 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
         // TODO: Implement markAllAsRead() method.
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function latestUnread(?int $userId, int $limit = 10): Collection
+    {
+        return Notification::unread()
+            ->forUser($userId)
+            ->latest()
+            ->take($limit)
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countUnread(int $userId): int
+    {
+        return Notification::unread()
+            ->forUser($userId)
+            ->count();
+    }
 }
