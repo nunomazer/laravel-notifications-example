@@ -253,20 +253,19 @@
 
     <main class="main-content">
         <div class="content-area">
-            <h1 class="welcome-message">Bem-vindo, {{ Auth::user()->name }}!</h1>
-            <p>Esta é sua área principal do dashboard.</p>
+            <h1 class="welcome-message">Welcome, {{ Auth::user()->name }}!</h1>
 
             <div class="dashboard-stats">
                 <div class="stat-card">
-                    <div class="stat-title">Total de Notificações</div>
+                    <div class="stat-title">Total of NOtifications</div>
                     <div class="stat-value">{{ Auth::user()->notifications()->count() }}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Não Lidas</div>
+                    <div class="stat-title">Unread</div>
                     <div class="stat-value">{{ Auth::user()->unreadNotifications()->count() }}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Hoje</div>
+                    <div class="stat-title">Today</div>
                     <div class="stat-value">{{ Auth::user()->notifications()->whereDate('created_at', today())->count() }}</div>
                 </div>
             </div>
