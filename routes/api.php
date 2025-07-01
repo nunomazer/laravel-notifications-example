@@ -5,16 +5,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('notifications')
     ->name('api.notifications.')
+    ->middleware(['auto.auth'])
     ->group(function () {
+        Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])
+            ->name('index');
+
         Route::post('/', [App\Http\Controllers\NotificationController::class, 'store'])
             ->name('store');
 
         Route::put('/{notification}/mark-read', [App\Http\Controllers\NotificationController::class, 'putMarkAsRead'])
             ->name('mark-read');
-    });//->middleware(['auth:sanctum', 'cache.control:300']);
+    });
 
 Route::prefix('users')
     ->name('api.users.')
+    ->middleware(['auto.auth'])
     ->group(function () {
         Route::get('/me', function (Request $request) {
             return $request->user();

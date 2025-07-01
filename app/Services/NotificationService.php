@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Enums\NotificationType;
+use App\Enums\ReadStatus;
 use App\Events\NotificationCreated;
 use App\Exceptions\InvalidNotificationException;
 use App\Models\Notification;
 use App\Models\User;
 use App\Repositories\Contracts\NotificationRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -92,6 +94,25 @@ class NotificationService
     {
         return $this->cacheService->remember($userId, 'unread_notification_count', null, function () use ($userId) {
             return $this->notificationRepository->countUnread($userId);
+        });
+    }
+
+    /**
+     * List all notifications for a user with pagination and filters
+     *
+     * @param int $userId The authenticated user ID
+     * @param int $page Current page number
+     * @param int $perPage Number of items per page
+     * @param ReadStatus|null $readStatus Optional filter by read status
+     * @return LengthAwarePaginator
+     */
+    public function listForUser(int $userId, int $page, int $perPage, ?ReadStatus $readStatus = null): LengthAwarePaginator
+    {
+        $filters = ['read_status' => $readStatus?->value];
+        $cacheKey = $this->cacheService->getUserNotificationsCacheKey($userId, $page, $perPage, $filters);
+
+        return $this->cacheService->remember($userId, $cacheKey, null, function () use ($userId, $readStatus, $perPage) {
+            return $this->notificationRepository->listByUser($userId, $readStatus, $perPage);
         });
     }
 

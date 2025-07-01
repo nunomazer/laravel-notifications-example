@@ -1,0 +1,16 @@
+meta {
+  name: List
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BASE_URL}}/notifications?page=2&per_page=5
+  body: json
+  auth: inherit
+}
+
+params:query {
+  page: 2
+  per_page: 5
+}

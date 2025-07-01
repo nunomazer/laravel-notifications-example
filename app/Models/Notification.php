@@ -48,6 +48,11 @@ class Notification extends Model
         return $query->whereNull('read_at');
     }
 
+    public function scopeRead(Builder $query): Builder
+    {
+        return $query->whereNotNull('read_at');
+    }
+
     public function scopeForUser(Builder $query, int|User $user): Builder
     {
         if ($user instanceof User) {

@@ -35,7 +35,16 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
      */
     public function listByUser(?int $userId, ?ReadStatus $readStatus, ?int $perPage): LengthAwarePaginator
     {
-        // TODO: Implement listByUser() method.
+        $query = Notification::query()
+            ->forUser($userId);
+
+        if ($readStatus === ReadStatus::READ) {
+            $query->read();
+        } elseif ($readStatus === ReadStatus::UNREAD) {
+            $query->unread();
+        }
+
+        return $query->paginate($perPage ?? 15);
     }
 
     /**
