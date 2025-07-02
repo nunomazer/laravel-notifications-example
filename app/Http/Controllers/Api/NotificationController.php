@@ -46,6 +46,7 @@ class NotificationController extends Controller
             }
 
             // Validate and convert type parameter
+            $typeEnum = null;
             if ($type && NotificationType::isValid($type)) {
                 $typeEnum = NotificationType::from($type);
             }

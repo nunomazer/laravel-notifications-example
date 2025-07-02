@@ -32,6 +32,7 @@ class NotificationController extends Controller
             $page = (int)$request->query('page', 1);
             $perPage = (int)$request->query('per_page', 15);
             $readStatus = $request->query('read_status');
+            $type = $request->query('type');
 
             // Validate and convert read_status parameter
             $readStatusEnum = null;
@@ -39,12 +40,19 @@ class NotificationController extends Controller
                 $readStatusEnum = ReadStatus::from($readStatus);
             }
 
+            // Validate and convert type parameter
+            $typeEnum = null;
+            if ($type && NotificationType::isValid($type)) {
+                $typeEnum = NotificationType::from($type);
+            }
+
             // Get paginated notifications for authenticated user
             $notifications = $this->notificationService->listForUser(
                 $request->user()->id,
                 $page,
                 $perPage,
-                $readStatusEnum
+                $readStatusEnum,
+                $typeEnum
             );
 
             return view('notifications.index', compact('notifications'));
