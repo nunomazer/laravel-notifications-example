@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReadStatus;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
@@ -11,7 +12,12 @@ use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\View\View;
 
+/**
+ * Class NotificationController
+ * Handles web requests related to notifications.
+ */
 class NotificationController extends Controller
 {
     public function __construct(
@@ -25,7 +31,7 @@ class NotificationController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): View
     {
         try {
             $page = (int)$request->query('page', 1);
@@ -46,77 +52,10 @@ class NotificationController extends Controller
                 $readStatusEnum
             );
 
-            return response()->json([
-                'data' => NotificationResource::collection($notifications->items()),
-                'meta' => [
-                    'current_page' => $notifications->currentPage(),
-                    'per_page' => $notifications->perPage(),
-                    'total' => $notifications->total(),
-                    'last_page' => $notifications->lastPage(),
-                ],
-                'message' => 'Notifications retrieved successfully.',
-            ], Response::HTTP_OK);
+            return view('notifications.index', compact('notifications'));
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error retrieving notifications.',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return back()->with('error', 'Error to show notifications.');
         }
     }
 
-    /**
-     * Create a new notification.
-     */
-    public function store(StoreNotificationRequest $request): JsonResponse
-    {
-        try {
-            $notification = $this->notificationService->createNotification(
-                $request->validated()
-            );
-
-            return response()->json([
-                'data' => new NotificationResource($notification->load('user')),
-                'message' => 'Notification created.',
-            ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error creating notification.',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function getLatestByUser(Request $request, User $user): JsonResponse
-    {
-        try {
-            $notifications = $this->notificationService->latestUnreadForUser($user->id);
-
-            return response()->json([
-                'data' => NotificationResource::collection($notifications),
-                'message' => 'Latest notifications retrieved.',
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error trying retrieve latest notifications.',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function putMarkAsRead(Request $request, Notification $notification): JsonResponse
-    {
-        try {
-            $this->notificationService->markAsRead($notification);
-
-            return response()->json([
-                'data' => new NotificationResource($notification->load('user')),
-                'message' => 'Notification marked as read.',
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error marking notification as read.',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
 }

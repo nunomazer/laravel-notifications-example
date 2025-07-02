@@ -43,6 +43,11 @@ class NotificationBar extends Component
         $this->loadNotifications();
     }
 
+    public function viewAllNotifications()
+    {
+        return $this->redirect(route('notifications.index'));
+    }
+    
     #[On('notification-created')]
     public function handleNewNotification()
     {

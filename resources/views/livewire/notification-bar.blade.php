@@ -33,6 +33,11 @@
                     </div>
                 @endforelse
             </div>
+            <div class="notification-footer">
+                <button wire:click="viewAllNotifications" class="view-all-button">
+                    View All Notifications
+                </button>
+            </div>
         </div>
     @endif
 </div>

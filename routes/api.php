@@ -7,13 +7,13 @@ Route::prefix('notifications')
     ->name('api.notifications.')
     ->middleware(['auto.auth'])
     ->group(function () {
-        Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])
+        Route::get('/', [\App\Http\Controllers\Api\NotificationController::class, 'index'])
             ->name('index');
 
-        Route::post('/', [App\Http\Controllers\NotificationController::class, 'store'])
+        Route::post('/', [\App\Http\Controllers\Api\NotificationController::class, 'store'])
             ->name('store');
 
-        Route::put('/{notification}/mark-read', [App\Http\Controllers\NotificationController::class, 'putMarkAsRead'])
+        Route::put('/{notification}/mark-read', [\App\Http\Controllers\Api\NotificationController::class, 'putMarkAsRead'])
             ->name('mark-read');
     });
 
@@ -27,7 +27,7 @@ Route::prefix('users')
 
         Route::get(
             '/{user}/notifications/latest',
-            [App\Http\Controllers\NotificationController::class, 'getLatestByUser']
+            [\App\Http\Controllers\Api\NotificationController::class, 'getLatestByUser']
         )
             ->name('notifications.latest');
     });//->middleware(['auth:sanctum', 'cache.control:300']);
