@@ -34,18 +34,18 @@ class NotificationCacheService
      *
      * @param int $userId
      * @param int $page
-     * @param int $perPage
+     * @param int $perPageOrTitle
      * @param array $filters
      * @return string
      */
     public function getUserNotificationsCacheKey(
         int $userId,
         int $page,
-        int $perPage,
+        int|string $perPageOrTitle,
         array $filters = []
     ): string {
         $filterHash = md5(serialize($filters));
-        return "user_notifications_{$userId}_page_{$page}_per_{$perPage}_filters_{$filterHash}";
+        return "user_notifications_{$userId}_page_{$page}_per_{$perPageOrTitle}_filters_{$filterHash}";
     }
 
     /**

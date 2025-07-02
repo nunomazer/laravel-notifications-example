@@ -36,6 +36,8 @@ class NotificationService
 
             $notification = $this->notificationRepository->create($data);
 
+            $this->cacheService->invalidateUserNotificationCache($data['user_id']);
+
             event(new NotificationCreated($notification));
 
             Log::info('Notification created successfully', [
@@ -85,14 +87,16 @@ class NotificationService
      */
     public function latestUnreadForUser(int $userId, int $limit = 10): Collection
     {
-        return $this->cacheService->remember($userId, 'latest_unread_notifications', null, function () use ($userId, $limit) {
+        $cacheKey = $this->cacheService->getUserNotificationsCacheKey($userId, 1, 'latest_unread_notifications');
+        return $this->cacheService->remember($userId, $cacheKey, null, function () use ($userId, $limit) {
             return $this->notificationRepository->latestUnread($userId, $limit);
         });
     }
 
     public function countUnreadForUser(int $userId): int
     {
-        return $this->cacheService->remember($userId, 'unread_notification_count', null, function () use ($userId) {
+        $cacheKey = $this->cacheService->getUserNotificationsCacheKey($userId, 1, 'unread_notification_count');
+        return $this->cacheService->remember($userId, $cacheKey, null, function () use ($userId) {
             return $this->notificationRepository->countUnread($userId);
         });
     }
