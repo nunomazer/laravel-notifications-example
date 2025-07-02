@@ -562,6 +562,9 @@
             <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 Home
             </a>
+            <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                Dashboard
+            </a>
             <a href="{{ route('notifications.index') }}"
                class="nav-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
                 Notifications

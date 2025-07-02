@@ -18,7 +18,7 @@ class NotificationCacheService
      * @param callable $callback
      * @return mixed
      */
-    public function remember(int $userId, string $key, null | int $ttl, callable $callback): mixed
+    public function remember(int $userId, string $key, null|int $ttl, callable $callback): mixed
     {
         if (is_null($ttl)) {
             $ttl = self::DEFAULT_TTL;
@@ -61,6 +61,21 @@ class NotificationCacheService
         foreach ($cacheKeyList as $cacheKey) {
             Cache::forget($cacheKey);
         }
+    }
+
+    /**
+     * Caches a dashboard-related value for a user.
+     *
+     * @param int $userId
+     * @param string $key
+     * @param int $ttl
+     * @param callable $callback
+     * @return mixed
+     */
+    public function rememberDashboard(int $userId, string $key, int $ttl, callable $callback): mixed
+    {
+        $key = "dashboard_{$key}";
+        return $this->remember($userId, $key, $ttl, $callback);
     }
 
     /**

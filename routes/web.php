@@ -14,3 +14,7 @@ Route::prefix('notifications')
         Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index'])
             ->name('index');
     });
+
+Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auto.auth');
