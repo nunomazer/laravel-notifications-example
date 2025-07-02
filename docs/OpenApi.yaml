@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: OpenApi
+  version: 1.0.0
+paths:
+  /api/notifications:
+    post:
+      summary: Store
+      operationId: Store
+      description: ''
+      tags:
+        - Notifications
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/store'
+    get:
+      summary: List
+      operationId: List
+      description: ''
+      tags:
+        - Notifications
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '2'
+        - name: per_page
+          in: query
+          description: ''
+          required: true
+          example: '5'
+  /api/users/{user}/notifications/latest:
+    get:
+      summary: Latest by User
+      operationId: Latest by User
+      description: ''
+      tags:
+        - User
+      responses:
+        '200':
+          description: ''
+  /api/notifications/{notification}/mark-read:
+    put:
+      summary: Mark as Read
+      operationId: Mark as Read
+      description: ''
+      tags:
+        - Notifications
+      responses:
+        '200':
+          description: ''
+servers:
+  - url: http://curotech.test
+components:
+  schemas:
+    store:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+        user_id:
+          type: number
+  requestBodies:
+    store:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/store'
+      description: ''
+      required: true
+  securitySchemes: {}

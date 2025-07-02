@@ -1,0 +1,176 @@
+{
+  "info": {
+    "name": "Curotec-tech-assess-laravel",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Store",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Create a new notification in database and dispatch it to the user.\n\nPayload example:\n\n```json\n{\n  \"title\": \"Hi, new noti for you\",\n  \"message\": \"The assessment is ready\",\n  \"type\": \"success\",\n  \"user_id\":  1\n}\n```",
+            "url": {
+              "raw": "{{BASE_URL}}/notifications",
+              "protocol": "",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Hi, new noti for you\",\n  \"message\": \"The assessment is ready\",\n  \"type\": \"success\",\n  \"user_id\":  1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Latest by User",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{user}}/notifications/latest",
+              "protocol": "",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "users",
+                "{{user}}",
+                "notifications",
+                "latest"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mark as Read",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{BASE_URL}}/notifications/{{notification}}/mark-read",
+              "protocol": "",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notification}}",
+                "mark-read"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "List",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{BASE_URL}}/notifications?page=2&per_page=5",
+              "protocol": "",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications?page=2&per_page=5"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                },
+                {
+                  "key": "per_page",
+                  "value": "5"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "user",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "notification",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
