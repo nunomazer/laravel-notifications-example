@@ -495,6 +495,58 @@
             flex-direction: column;
             align-items: center;
         }
+
+        /* Toast Styles */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #333;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        .toast.warning {
+            background: #f59e0b;
+        }
+
+        .toast.info {
+            background: #3b82f6;
+        }
     </style>
     <meta name="user-id" content="{{ Auth::id() }}">
     @livewireStyles
@@ -540,14 +592,51 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Configuração do Laravel Echo
+        // toast container
+        if (!document.querySelector('.toast-container')) {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+
+        function showToast(title, message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // remove after 2 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Laravel Echo
         window.Echo.private(`${window.Laravel.user.id}.user.notifications`)
             .listen('NotificationCreated', (e) => {
-                // Dispara evento Livewire para atualizar as notificações
+                console.log('New notification:', e);
+
+                // Show a toast notification
+                showToast(
+                    e.notification.title,
+                    e.notification.message,
+                    e.notification.type
+                );
+
+                // Dispatch Livewire event to update the notification bar
                 Livewire.dispatch('notification-created');
             });
 
-        // Fechar dropdown ao clicar fora
+        // dropdown
         document.addEventListener('click', function (e) {
             if (!e.target.closest('.notification-container')) {
                 Livewire.dispatch('close-dropdown');
