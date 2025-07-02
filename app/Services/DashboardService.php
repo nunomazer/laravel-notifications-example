@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\NotificationType;
 use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,7 +13,8 @@ class DashboardService
 {
     public function __construct(
         private NotificationCacheService $cacheService
-    ) {}
+    ) {
+    }
 
     /**
      * Get aggregated notification statistics for a user
@@ -195,7 +195,9 @@ class DashboardService
     private function getReadRate(Builder $query): float
     {
         $total = $this->getTotalNotifications($query);
-        if ($total === 0) return 0;
+        if ($total === 0) {
+            return 0;
+        }
 
         $read = $this->getReadCount($query);
         return round(($read / $total) * 100, 2);

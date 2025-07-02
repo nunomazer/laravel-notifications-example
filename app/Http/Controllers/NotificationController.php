@@ -3,15 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReadStatus;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreNotificationRequest;
-use App\Http\Resources\NotificationResource;
-use App\Models\Notification;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 /**

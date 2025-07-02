@@ -55,7 +55,7 @@ class Dashboard extends Component
         $this->loading = true;
 
         $userId = Auth::id();
-        $filters = array_filter($this->filters, fn($value) => $value !== '');
+        $filters = array_filter($this->filters, fn ($value) => $value !== '');
 
         $this->stats = $this->dashboardService->getNotificationStats($userId, $filters);
         $this->trendData = $this->dashboardService->getTrendData($userId, $this->filters['period'], $filters);

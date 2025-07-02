@@ -12,9 +12,24 @@ post {
 
 body:json {
   {
-    "title": "Massa pra kraio",
-    "message": "Ao menos aprendi algo novo",
+    "title": "Hi, new noti for you",
+    "message": "The assessment is ready",
     "type": "success",
     "user_id":  1
   }
+}
+
+docs {
+  Create a new notification in database and dispatch it to the user.
+  
+  Payload example:
+  
+  ```json
+  {
+    "title": "Hi, new noti for you",
+    "message": "The assessment is ready",
+    "type": "success",
+    "user_id":  1
+  }
+  ```
 }

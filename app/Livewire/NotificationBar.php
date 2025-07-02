@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Models\Notification;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
@@ -47,7 +46,7 @@ class NotificationBar extends Component
     {
         return $this->redirect(route('notifications.index'));
     }
-    
+
     #[On('notification-created')]
     public function handleNewNotification()
     {

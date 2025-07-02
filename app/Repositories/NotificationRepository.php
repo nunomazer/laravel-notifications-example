@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Enums\ReadStatus;
 use App\Models\Notification;
-use App\Services\NotificationCacheService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
