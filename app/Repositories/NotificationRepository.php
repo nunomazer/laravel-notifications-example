@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\NotificationType;
 use App\Enums\ReadStatus;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,7 +33,7 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
     /**
      * @inheritDoc
      */
-    public function listByUser(?int $userId, ?ReadStatus $readStatus, ?int $perPage): LengthAwarePaginator
+    public function listByUser(?int $userId, ?ReadStatus $readStatus, ?NotificationType $type, ?int $perPage): LengthAwarePaginator
     {
         $query = Notification::query()
             ->forUser($userId);
@@ -41,6 +42,10 @@ class NotificationRepository implements Contracts\NotificationRepositoryInterfac
             $query->read();
         } elseif ($readStatus === ReadStatus::UNREAD) {
             $query->unread();
+        }
+
+        if ($type) {
+            $query->where('type', $type->value);
         }
 
         return $query->paginate($perPage ?? 15);

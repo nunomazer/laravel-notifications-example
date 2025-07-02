@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
+use App\Enums\NotificationType;
 use App\Enums\ReadStatus;
 use App\Models\Notification;
 use App\Models\User;
@@ -38,6 +39,7 @@ interface NotificationRepositoryInterface
     public function listByUser(
         null | int $userId,
         null | ReadStatus $readStatus,
+        null | NotificationType $type,
         null | int $perPage
     ): LengthAwarePaginator;
 

@@ -109,13 +109,16 @@ class NotificationService
      * @param ReadStatus|null $readStatus Optional filter by read status
      * @return LengthAwarePaginator
      */
-    public function listForUser(int $userId, int $page, int $perPage, ?ReadStatus $readStatus = null): LengthAwarePaginator
+    public function listForUser(int $userId, int $page, int $perPage, ?ReadStatus $readStatus = null, ?NotificationType $type): LengthAwarePaginator
     {
-        $filters = ['read_status' => $readStatus?->value];
+        $filters = [
+            'read_status' => $readStatus?->value,
+            'type' => $type?->value,
+        ];
         $cacheKey = $this->cacheService->getUserNotificationsCacheKey($userId, $page, $perPage, $filters);
 
-        return $this->cacheService->remember($userId, $cacheKey, null, function () use ($userId, $readStatus, $perPage) {
-            return $this->notificationRepository->listByUser($userId, $readStatus, $perPage);
+        return $this->cacheService->remember($userId, $cacheKey, null, function () use ($userId, $readStatus, $type, $perPage) {
+            return $this->notificationRepository->listByUser($userId, $readStatus, $type, $perPage);
         });
     }
 
